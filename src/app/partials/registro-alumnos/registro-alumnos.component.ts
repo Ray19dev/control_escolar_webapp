@@ -1,4 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
+import { AlumnosService } from 'src/app/services/alumnos.service';
+
 
 @Component({
   selector: 'app-registro-alumnos',
@@ -6,13 +10,140 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./registro-alumnos.component.scss']
 })
 export class RegistroAlumnosComponent implements OnInit {
+  [x: string]: any;
 
   @Input() rol: string = "";
   @Input() datos_user: any = {};
 
-  constructor() { }
+  //Para contraseñas
+  public hide_1: boolean = false;
+  public hide_2: boolean = false;
+  public inputType_1: string = 'password';
+  public inputType_2: string = 'password';
+
+  public alumno:any= {};
+  public token: string = "";
+  public errors:any={};
+  public editar:boolean = false;
+  public idUser: Number = 0;
+
+  constructor(
+    private router: Router,
+    private location : Location,
+    public activatedRoute: ActivatedRoute,
+    private alumnosService: AlumnosService
+
+  ) { }
 
   ngOnInit(): void {
+  }
+
+  public regresar(){
+    this.location.back();
+  }
+
+  public registrar(){
+    // Lógica para registrar un nuevo alumno
+     //Validaciones del formulario
+     this.errors = {};
+     this.errors = this.alumnosService.validarAlumno(this.alumno, this.editar);
+     if(Object.keys(this.errors).length > 0){
+       return false;
+     }
+     //Se verifica si las validaciones, se verifica si las contraseñas coinciden
+     if(this.alumno.password != this.alumno.confirmar_password){
+       alert('Las contraseñas no coinciden');
+       return false;
+     }
+
+     this.alumno.rol = 'alumnos';
+
+
+     this.alumnosService.registrarAlumnos(this.alumno).subscribe({
+       next: (response:any) => {
+         //Aquí va la ejecución del servicio si todo es correcto
+         alert('Alumno registrado con éxito');
+         console.log("Alumno registrado",response);
+
+         //Validar si se registro que entonces navegue a la lista de alumnos
+         if(this.token != ""){
+           this.router.navigate(['alumno']);
+         }else{
+           this.router.navigate(['/']);
+         }
+       },
+       error: (error:any) => {
+         if(error.status === 422){
+           this.errors = error.error.errors;
+         } else {
+           alert('Error al registrar el alumno');
+         }
+       }
+     });
+   }
+
+
+  public actualizar(){
+    // Lógica para actualizar los datos de un alumno existente
+  }
+
+  //Funciones para password
+  showPassword()
+  {
+    if(this.inputType_1 == 'password'){
+      this.inputType_1 = 'text';
+      this.hide_1 = true;
+    }
+    else{
+      this.inputType_1 = 'password';
+      this.hide_1 = false;
+    }
+  }
+
+  showPwdConfirmar()
+  {
+    if(this.inputType_2 == 'password'){
+      this.inputType_2 = 'text';
+      this.hide_2 = true;
+    }
+    else{
+      this.inputType_2 = 'password';
+      this.hide_2 = false;
+    }
+  }
+
+  //Función para detectar el cambio de fecha
+  public changeFecha(event :any){
+    console.log(event);
+    console.log(event.value.toISOString());
+
+    this.alumno.birthday = event.value.toISOString().split("T")[0];
+    console.log("Fecha: ", this.alumno.birthday);
+  }
+
+  public soloLetras(event: KeyboardEvent) {
+    const charCode = event.key.charCodeAt(0);
+    // Permitir solo letras (mayúsculas y minúsculas) y espacio
+    if (
+      !(charCode >= 65 && charCode <= 90) &&  // Letras mayúsculas
+      !(charCode >= 97 && charCode <= 122) //letras minusculas
+
+    ) {
+      event.preventDefault();
+    }
+  }
+
+  public soloLetrasNumeros(event: KeyboardEvent) {
+    const charCode = event.key.charCodeAt(0);
+
+
+    if (
+      !(charCode >= 65 && charCode <= 90) &&   // Letras mayúsculas
+      !(charCode >= 97 && charCode <= 122) &&  // Letras minúsculas
+      !(charCode >= 48 && charCode <= 57)      // Números
+    ) {
+      event.preventDefault();
+    }
   }
 
 }

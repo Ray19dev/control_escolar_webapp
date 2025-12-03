@@ -23,12 +23,43 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule, MAT_DATE_LOCALE} from '@angular/material/core';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatSelectModule} from '@angular/material/select';
+import {MatTableModule} from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
+import {MatDialogModule} from '@angular/material/dialog';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
+
+// Paginación
+import {MatPaginatorIntl, MatPaginatorModule} from '@angular/material/paginator';
+//Para el paginator en español
+import { getSpanishPaginatorIntl } from './shared/spanish-paginator-intl';
+
+// IMPORTANTE: añade el módulo de Sidenav
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 //Ngx-cookie-service
 import { CookieService } from 'ngx-cookie-service';
 
+import { NgChartsModule } from 'ng2-charts';
+
 // Third Party Modules
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { HomeScreenComponent } from './screens/home-screen/home-screen.component';
+import { AdminScreenComponent } from './screens/admin-screen/admin-screen.component';
+import { AlumnosScreenComponent } from './screens/alumnos-screen/alumnos-screen.component';
+import { MaestrosScreenComponent } from './screens/maestros-screen/maestros-screen.component';
+import { NavbarUserComponent } from './partials/navbar-user/navbar-user.component';
+import { SidebarComponent } from './partials/sidebar/sidebar.component';
+import { EliminarUserModalComponent } from './modals/eliminar-user-modal/eliminar-user-modal.component';
+import { GraficasScreenComponent } from './screens/graficas-screen/graficas-screen.component';
+import { MateriasScreenComponent } from './screens/materias-screen/materias-screen.component';
+import { ListaMateriasComponent } from './screens/lista-materias/lista-materias.component';
+import { EliminarMateriasModalComponent } from './modals/eliminar-materias-modal/eliminar-materias-modal.component';
+
+
 
 @NgModule({
   declarations: [
@@ -39,7 +70,18 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
     DashboardLayoutComponent,
     RegistroAdminComponent,
     RegistroAlumnosComponent,
-    RegistroMaestrosComponent
+    RegistroMaestrosComponent,
+    HomeScreenComponent,
+    AdminScreenComponent,
+    AlumnosScreenComponent,
+    MaestrosScreenComponent,
+    NavbarUserComponent,
+    SidebarComponent,
+    EliminarUserModalComponent,
+    GraficasScreenComponent,
+    MateriasScreenComponent,
+    ListaMateriasComponent,
+    EliminarMateriasModalComponent
   ],
   imports: [
     BrowserModule,
@@ -53,10 +95,23 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
     MatRadioModule,
     MatFormFieldModule,
     MatInputModule,
-    NgxMaskDirective
+    NgxMaskDirective,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatCheckboxModule,
+    MatSelectModule,
+    MatSidenavModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatDialogModule,
+    NgChartsModule,
+    NgxMaterialTimepickerModule,
   ],
   providers: [
     CookieService,
+    { provide: MAT_DATE_LOCALE, useValue: 'es-MX' },
+    { provide: MatPaginatorIntl, useValue: getSpanishPaginatorIntl() },
     provideNgxMask()
   ],
   bootstrap: [AppComponent]
